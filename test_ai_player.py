@@ -9,7 +9,7 @@ class TestAIPlayer(unittest.TestCase):
     def test_ai_levels(self):
         wins = {1: 0, 2: 0, 3: 0}
         draws = 0
-        games_per_matchup = 100
+        games_per_matchup = 1000
 
         for level1 in [1, 2, 3]:
             for level2 in range(level1 + 1, 4):
@@ -26,7 +26,8 @@ class TestAIPlayer(unittest.TestCase):
                     else:
                         wins[int(result)] += 1
                     
-                    print(f"Game {game_num + 1}: {'Draw' if result == 'draw' else f'AI Level {result} wins'}")
+                    if game_num % 100 == 0:
+                        print(f"Game {game_num + 1}: {'Draw' if result == 'draw' else f'AI Level {result} wins'}")
 
         print(f"\nFinal Results:")
         print(f"AI Level Wins: {wins}")
@@ -36,7 +37,7 @@ class TestAIPlayer(unittest.TestCase):
         self.assertGreater(wins[3], wins[2])
         self.assertGreater(wins[3], wins[1])
         self.assertGreater(wins[2], wins[1])
-        self.assertLess(draws, games_per_matchup * 3)  # Ensure not all games are draws
+        self.assertLess(draws, games_per_matchup * 3 * 0.9)  # Ensure not more than 90% of games are draws
 
     def test_optimal_moves(self):
         ai = AIPlayer()

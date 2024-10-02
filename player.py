@@ -96,48 +96,58 @@ class AIPlayer(Player):
         return random.choice(available_moves)
 
     def _get_medium_move(self, game):
-        # Check for winning move
-        for i in range(3):
-            for j in range(3):
-                if game.get_board()[i][j] == " ":
-                    game.make_move((i, j))
-                    if game.is_game_over():
+        # 80% chance of making a smart move, 20% chance of making a random move
+        if random.random() < 0.8:
+            # Check for winning move
+            for i in range(3):
+                for j in range(3):
+                    if game.get_board()[i][j] == " ":
+                        game.make_move((i, j))
+                        if game.is_game_over():
+                            game.undo_move((i, j))
+                            return (i, j)
                         game.undo_move((i, j))
-                        return (i, j)
-                    game.undo_move((i, j))
-        
-        # Check for blocking opponent's winning move
-        opponent = 'O' if game.get_current_player() == 'X' else 'X'
-        for i in range(3):
-            for j in range(3):
-                if game.get_board()[i][j] == " ":
-                    game.get_board()[i][j] = opponent
-                    if game._check_game_over():
+            
+            # Check for blocking opponent's winning move
+            opponent = 'O' if game.get_current_player() == 'X' else 'X'
+            for i in range(3):
+                for j in range(3):
+                    if game.get_board()[i][j] == " ":
+                        game.get_board()[i][j] = opponent
+                        if game._check_game_over():
+                            game.get_board()[i][j] = " "
+                            return (i, j)
                         game.get_board()[i][j] = " "
-                        return (i, j)
-                    game.get_board()[i][j] = " "
+            
+            # If no winning or blocking move, choose a strategic move
+            strategic_moves = [(1, 1), (0, 0), (0, 2), (2, 0), (2, 2)]
+            for move in strategic_moves:
+                if game.get_board()[move[0]][move[1]] == " ":
+                    return move
         
-        # If no winning or blocking move, choose a random move
+        # If no strategic move or 20% chance, choose a random move
         return self._get_random_move(game)
 
     def _get_hard_move(self, game):
-        board = game.get_board()
-        best_score = -math.inf
-        best_move = None
-        for i in range(3):
-            for j in range(3):
-                if board[i][j] == " ":
-                    board[i][j] = game.get_current_player()
-                    score = self._minimax(game, board, 0, False, -math.inf, math.inf)
-                    board[i][j] = " "
-                    if score > best_score:
-                        best_score = score
-                        best_move = (i, j)
-                    elif score == best_score:
-                        # Prefer corner moves and center move over edge moves
-                        if (i, j) in [(0, 0), (0, 2), (2, 0), (2, 2), (1, 1)]:
-                            best_move = (i, j)
-        return best_move
+        # 90% chance of making the best move, 10% chance of making a suboptimal move
+        if random.random() < 0.9:
+            board = game.get_board()
+            best_score = -math.inf
+            best_moves = []
+            for i in range(3):
+                for j in range(3):
+                    if board[i][j] == " ":
+                        board[i][j] = game.get_current_player()
+                        score = self._minimax(game, board, 0, False, -math.inf, math.inf)
+                        board[i][j] = " "
+                        if score > best_score:
+                            best_score = score
+                            best_moves = [(i, j)]
+                        elif score == best_score:
+                            best_moves.append((i, j))
+            return random.choice(best_moves)
+        else:
+            return self._get_medium_move(game)
 
     def _minimax(self, game, board, depth, is_maximizing, alpha, beta):
         result = self._check_winner(board)
