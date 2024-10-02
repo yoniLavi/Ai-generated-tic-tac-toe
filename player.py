@@ -23,13 +23,22 @@ class HumanPlayer(Player):
 
 class AIPlayer(Player):
     def __init__(self):
-        self.strength_level = 1
+        self.strength_level = 1  # Default to easiest level
+
+    def set_strength_level(self, level):
+        """
+        Set the AI strength level.
+        1: Easy (random moves)
+        2: Medium (smart moves with some randomness)
+        3: Hard (minimax algorithm)
+        """
+        self.strength_level = level
 
     def set_strength_level(self, level):
         self.strength_level = level
 
     def get_move(self, game):
-        if self.strength_level == 1:
+        if self.strength_level == 3:
             return self._get_hard_move(game)
         elif self.strength_level == 2:
             return self._get_medium_move(game)
