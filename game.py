@@ -13,6 +13,8 @@ class Game:
         return self.current_player
     def make_move(self, move):
         row, col = move
+        if self.board[row][col] != ' ':
+            raise ValueError("Invalid move: This position is already occupied")
         self.board[row][col] = self.current_player
         self.check_game_over()
         # Switch to the other player
