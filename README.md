@@ -70,11 +70,25 @@ You can set the AI difficulty using the `-d` or `--difficulty` command-line argu
 
 ## Running Tests
 
-To run the unit tests, execute:
+There are two ways to run the tests:
 
-```
-python -m unittest discover
-```
+1. Using the `run_tests.py` script:
+   ```
+   python run_tests.py
+   ```
+   This will discover and run all tests in the project.
+
+2. Using the unittest module directly:
+   ```
+   python -m unittest discover
+   ```
+
+Both methods will run all the tests in the project, including:
+- `test_game_basics.py`
+- `test_tic_tac_toe.py`
+- `test_ai_player.py`
+
+The `run_tests.py` script provides a convenient way to run all tests with a single command and displays detailed output for each test.
 
 ## Contributing
 
