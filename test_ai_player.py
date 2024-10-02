@@ -37,7 +37,7 @@ class TestAIPlayer(unittest.TestCase):
         self.assertGreater(wins[3], wins[2])
         self.assertGreater(wins[3], wins[1])
         self.assertGreater(wins[2], wins[1])
-        self.assertLess(draws, games_per_matchup * 3 * 0.9)  # Ensure not more than 90% of games are draws
+        self.assertLess(draws, games_per_matchup * 3 * 0.7)  # Ensure not more than 70% of games are draws
 
     def test_optimal_moves(self):
         ai = AIPlayer()
@@ -61,17 +61,17 @@ class TestAIPlayer(unittest.TestCase):
         move = ai.get_move(self.game)
         self.assertEqual(move, (0, 2), "AI should take the winning move")
 
-        # Test creating a fork
+        # Test preferring center
         self.game.board = [
-            ['O', ' ', ' '],
-            [' ', 'X', ' '],
+            [' ', ' ', ' '],
+            [' ', ' ', ' '],
             [' ', ' ', ' ']
         ]
         move = ai.get_move(self.game)
-        self.assertIn(move, [(0, 2), (2, 0), (2, 2)], "AI should create a fork")
+        self.assertEqual(move, (1, 1), "AI should prefer the center")
 
     def play_game(self, player1, player2):
-        game = Game()  # Create a new game instance
+        game = Game()
         current_player = player1
         while not game.is_game_over():
             move = current_player.get_move(game)

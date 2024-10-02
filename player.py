@@ -2,42 +2,13 @@
 This file contains the Player classes.
 """
 import random
-import math
-
 
 class Player:
-    """
-    Base class for all players.
-    """
-
     def get_move(self, game):
-        """
-        Get the player's move.
-
-        Args:
-            game (Game): The current game state.
-
-        Returns:
-            tuple: A tuple containing the row and column of the move.
-        """
         raise NotImplementedError("Subclasses must implement get_move method")
 
-
 class HumanPlayer(Player):
-    """
-    Represents a human player.
-    """
-
     def get_move(self, game):
-        """
-        Get the human player's move through user input.
-
-        Args:
-            game (Game): The current game state.
-
-        Returns:
-            tuple: A tuple containing the row and column of the move.
-        """
         board = game.get_board()
         while True:
             try:
@@ -50,136 +21,78 @@ class HumanPlayer(Player):
             except ValueError:
                 print("Invalid input. Try again.")
 
-
 class AIPlayer(Player):
-    """
-    Represents an AI player.
-    """
-
     def __init__(self):
-        """
-        Initialize the AI player with a default strength level.
-        """
         self.strength_level = 1
 
     def set_strength_level(self, level):
-        """
-        Set the strength level of the AI player.
-
-        Args:
-            level (int): The strength level of the AI.
-        """
         self.strength_level = level
 
     def get_move(self, game):
-        """
-        Get the AI player's move based on the current game state.
-
-        Args:
-            game (Game): The current game state.
-
-        Returns:
-            tuple: A tuple containing the row and column of the move.
-        """
         if self.strength_level == 1:
-            return self._get_random_move(game)
+            return self._get_easy_move(game)
         elif self.strength_level == 2:
             return self._get_medium_move(game)
         else:
             return self._get_hard_move(game)
 
-    def _get_random_move(self, game):
-        board = game.get_board()
-        available_moves = [
-            (i, j) for i in range(3) for j in range(3) if board[i][j] == " "
-        ]
-        return random.choice(available_moves)
-
-    def _get_medium_move(self, game):
-        # 80% chance of making a smart move, 20% chance of making a random move
-        if random.random() < 0.8:
-            # Check for winning move
-            for i in range(3):
-                for j in range(3):
-                    if game.get_board()[i][j] == " ":
-                        game.make_move((i, j))
-                        if game.is_game_over():
-                            game.undo_move((i, j))
-                            return (i, j)
-                        game.undo_move((i, j))
-            
-            # Check for blocking opponent's winning move
-            opponent = 'O' if game.get_current_player() == 'X' else 'X'
-            for i in range(3):
-                for j in range(3):
-                    if game.get_board()[i][j] == " ":
-                        game.get_board()[i][j] = opponent
-                        if game._check_game_over():
-                            game.get_board()[i][j] = " "
-                            return (i, j)
-                        game.get_board()[i][j] = " "
-            
-            # If no winning or blocking move, choose a strategic move
-            strategic_moves = [(1, 1), (0, 0), (0, 2), (2, 0), (2, 2)]
-            for move in strategic_moves:
-                if game.get_board()[move[0]][move[1]] == " ":
-                    return move
-        
-        # If no strategic move or 20% chance, choose a random move
+    def _get_easy_move(self, game):
         return self._get_random_move(game)
 
+    def _get_medium_move(self, game):
+        if random.random() < 0.5:
+            return self._get_smart_move(game)
+        else:
+            return self._get_random_move(game)
+
     def _get_hard_move(self, game):
-        # 90% chance of making the best move, 10% chance of making a suboptimal move
-        if random.random() < 0.9:
-            board = game.get_board()
-            best_score = -math.inf
-            best_moves = []
-            for i in range(3):
-                for j in range(3):
-                    if board[i][j] == " ":
-                        board[i][j] = game.get_current_player()
-                        score = self._minimax(game, board, 0, False, -math.inf, math.inf)
-                        board[i][j] = " "
-                        if score > best_score:
-                            best_score = score
-                            best_moves = [(i, j)]
-                        elif score == best_score:
-                            best_moves.append((i, j))
-            return random.choice(best_moves)
-        else:
-            return self._get_medium_move(game)
+        return self._get_smart_move(game)
 
-    def _minimax(self, game, board, depth, is_maximizing, alpha, beta):
-        result = self._check_winner(board)
-        if result is not None:
-            return self._get_score(game, result, depth)
+    def _get_random_move(self, game):
+        board = game.get_board()
+        available_moves = [(i, j) for i in range(3) for j in range(3) if board[i][j] == " "]
+        return random.choice(available_moves)
 
-        if is_maximizing:
-            best_score = -math.inf
-            for i in range(3):
-                for j in range(3):
-                    if board[i][j] == " ":
-                        board[i][j] = game.get_current_player()
-                        score = self._minimax(game, board, depth + 1, False, alpha, beta)
+    def _get_smart_move(self, game):
+        board = game.get_board()
+        player = game.get_current_player()
+        opponent = 'O' if player == 'X' else 'X'
+
+        # Check for winning move
+        for i in range(3):
+            for j in range(3):
+                if board[i][j] == " ":
+                    board[i][j] = player
+                    if self._check_winner(board) == player:
                         board[i][j] = " "
-                        best_score = max(score, best_score)
-                        alpha = max(alpha, best_score)
-                        if beta <= alpha:
-                            break
-            return best_score
-        else:
-            best_score = math.inf
-            for i in range(3):
-                for j in range(3):
-                    if board[i][j] == " ":
-                        board[i][j] = 'O' if game.get_current_player() == 'X' else 'X'
-                        score = self._minimax(game, board, depth + 1, True, alpha, beta)
+                        return (i, j)
+                    board[i][j] = " "
+
+        # Check for blocking opponent's winning move
+        for i in range(3):
+            for j in range(3):
+                if board[i][j] == " ":
+                    board[i][j] = opponent
+                    if self._check_winner(board) == opponent:
                         board[i][j] = " "
-                        best_score = min(score, best_score)
-                        beta = min(beta, best_score)
-                        if beta <= alpha:
-                            break
-            return best_score
+                        return (i, j)
+                    board[i][j] = " "
+
+        # Choose center if available
+        if board[1][1] == " ":
+            return (1, 1)
+
+        # Choose a corner
+        corners = [(0, 0), (0, 2), (2, 0), (2, 2)]
+        available_corners = [corner for corner in corners if board[corner[0]][corner[1]] == " "]
+        if available_corners:
+            return random.choice(available_corners)
+
+        # Choose any available edge
+        edges = [(0, 1), (1, 0), (1, 2), (2, 1)]
+        available_edges = [edge for edge in edges if board[edge[0]][edge[1]] == " "]
+        if available_edges:
+            return random.choice(available_edges)
 
     def _check_winner(self, board):
         # Check rows, columns, and diagonals
@@ -192,17 +105,4 @@ class AIPlayer(Player):
             return board[0][0]
         if board[0][2] == board[1][1] == board[2][0] != " ":
             return board[0][2]
-        
-        # Check for a tie
-        if all(board[i][j] != " " for i in range(3) for j in range(3)):
-            return "tie"
-        
         return None
-
-    def _get_score(self, game, result, depth):
-        if result == "tie":
-            return 0
-        elif result == game.get_current_player():
-            return 10 - depth
-        else:
-            return depth - 10
