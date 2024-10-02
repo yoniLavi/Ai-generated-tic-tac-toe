@@ -55,7 +55,7 @@ class TestAIPlayer(unittest.TestCase):
 
     def test_optimal_moves(self):
         ai = AIPlayer()
-        ai.set_strength_level(3)  # Set to hardest difficulty
+        ai.set_strength_level(1)  # Set to hardest difficulty
 
         # Test blocking opponent's win
         game = Game()

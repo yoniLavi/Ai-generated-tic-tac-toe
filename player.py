@@ -30,11 +30,11 @@ class AIPlayer(Player):
 
     def get_move(self, game):
         if self.strength_level == 1:
-            return self._get_easy_move(game)
+            return self._get_hard_move(game)
         elif self.strength_level == 2:
             return self._get_medium_move(game)
         else:
-            return self._get_hard_move(game)
+            return self._get_easy_move(game)
 
     def _get_easy_move(self, game):
         return self._get_random_move(game)
