@@ -46,6 +46,31 @@ class AIPlayer(Player):
             return self._get_random_move(game)
 
     def _get_hard_move(self, game):
+        board = game.get_board()
+        player = game.get_current_player()
+        opponent = 'O' if player == 'X' else 'X'
+
+        # Check for winning move
+        for i in range(3):
+            for j in range(3):
+                if board[i][j] == " ":
+                    board[i][j] = player
+                    if self._check_winner(board) == player:
+                        board[i][j] = " "
+                        return (i, j)
+                    board[i][j] = " "
+
+        # Check for blocking opponent's winning move
+        for i in range(3):
+            for j in range(3):
+                if board[i][j] == " ":
+                    board[i][j] = opponent
+                    if self._check_winner(board) == opponent:
+                        board[i][j] = " "
+                        return (i, j)
+                    board[i][j] = " "
+
+        # If no immediate winning or blocking move, use minimax
         best_score, best_move = self._minimax(game, 0, True, float('-inf'), float('inf'))
         return best_move
 

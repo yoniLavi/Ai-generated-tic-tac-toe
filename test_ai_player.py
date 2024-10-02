@@ -57,7 +57,7 @@ class TestAIPlayer(unittest.TestCase):
         ai = AIPlayer()
         ai.set_strength_level(1)  # Set to hardest difficulty
 
-        # Test blocking opponent's win
+        # Test blocking opponent's win (horizontal)
         game = Game()
         game.board = [
             ['X', 'X', ' '],
@@ -66,7 +66,29 @@ class TestAIPlayer(unittest.TestCase):
         ]
         game.current_player = 'O'
         move = ai.get_move(game)
-        self.assertEqual(move, (0, 2), "AI should block opponent's win")
+        self.assertEqual(move, (0, 2), "AI should block opponent's horizontal win")
+
+        # Test blocking opponent's win (vertical)
+        game = Game()
+        game.board = [
+            ['X', ' ', ' '],
+            ['X', 'O', ' '],
+            [' ', ' ', ' ']
+        ]
+        game.current_player = 'O'
+        move = ai.get_move(game)
+        self.assertEqual(move, (2, 0), "AI should block opponent's vertical win")
+
+        # Test blocking opponent's win (diagonal)
+        game = Game()
+        game.board = [
+            ['X', ' ', ' '],
+            [' ', 'X', ' '],
+            [' ', 'O', ' ']
+        ]
+        game.current_player = 'O'
+        move = ai.get_move(game)
+        self.assertEqual(move, (2, 2), "AI should block opponent's diagonal win")
 
         # Test taking winning move
         game = Game()
