@@ -46,15 +46,24 @@ class AIPlayer(Player):
             return self._get_easy_move(game)
 
     def _get_easy_move(self, game):
+        """
+        Make a random move on the board.
+        """
         return self._get_random_move(game)
 
     def _get_medium_move(self, game):
-        if random.random() < 0.7:  # Increased probability of smart move
+        """
+        Make a smart move with 70% probability, otherwise make a random move.
+        """
+        if random.random() < 0.7:
             return self._get_smart_move(game)
         else:
             return self._get_random_move(game)
 
     def _get_hard_move(self, game):
+        """
+        Make the best possible move using the minimax algorithm with alpha-beta pruning.
+        """
         board = game.get_board()
         player = game.get_current_player()
         opponent = 'O' if player == 'X' else 'X'
