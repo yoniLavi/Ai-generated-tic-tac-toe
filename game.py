@@ -63,6 +63,19 @@ class Game:
         self._check_game_over()
         self._switch_player()
 
+    def undo_move(self, move):
+        """
+        Undo a move on the board.
+
+        Args:
+            move (tuple): A tuple containing the row and column of the move to undo.
+        """
+        row, col = move
+        self.board[row][col] = " "
+        self._switch_player()
+        self.result = None
+        self.game_over = False
+
     def _switch_player(self):
         """
         Switch to the other player.
