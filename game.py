@@ -69,8 +69,16 @@ class Game:
 
         Args:
             move (tuple): A tuple containing the row and column of the move to undo.
+
+        Raises:
+            ValueError: If the undo operation is invalid.
         """
         row, col = move
+        if self.board[row][col] == " ":
+            raise ValueError("Invalid undo: This position is empty")
+        last_player = "O" if self.current_player == "X" else "X"
+        if self.board[row][col] != last_player:
+            raise ValueError("Invalid undo: This is not the last move")
         self.board[row][col] = " "
         self._switch_player()
         self.result = None
