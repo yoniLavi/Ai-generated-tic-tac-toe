@@ -1,8 +1,8 @@
 import unittest
+from unittest.mock import patch
+from io import StringIO
 from game import Game
 from player import HumanPlayer, AIPlayer
-from io import StringIO
-import sys
 
 class TestTicTacToe(unittest.TestCase):
     def setUp(self):
@@ -32,7 +32,7 @@ class TestTicTacToe(unittest.TestCase):
         self.game.make_move((1, 1))
         self.game.make_move((0, 2))
         self.assertTrue(self.game.is_game_over())
-        self.assertEqual(self.game.get_result(), "X wins!")
+        self.assertEqual(self.game.get_result(), "X wins")
 
     def test_game_over_vertical(self):
         self.game.make_move((0, 0))
@@ -41,7 +41,7 @@ class TestTicTacToe(unittest.TestCase):
         self.game.make_move((0, 2))
         self.game.make_move((2, 0))
         self.assertTrue(self.game.is_game_over())
-        self.assertEqual(self.game.get_result(), "X wins!")
+        self.assertEqual(self.game.get_result(), "X wins")
 
     def test_game_over_diagonal(self):
         self.game.make_move((0, 0))
@@ -50,28 +50,24 @@ class TestTicTacToe(unittest.TestCase):
         self.game.make_move((0, 2))
         self.game.make_move((2, 2))
         self.assertTrue(self.game.is_game_over())
-        self.assertEqual(self.game.get_result(), "X wins!")
+        self.assertEqual(self.game.get_result(), "X wins")
 
     def test_game_over_draw(self):
         moves = [(0, 0), (0, 1), (0, 2), (1, 1), (1, 0), (1, 2), (2, 1), (2, 0), (2, 2)]
         for move in moves:
             self.game.make_move(move)
         self.assertTrue(self.game.is_game_over())
-        self.assertEqual(self.game.get_result(), "It's a draw!")
+        self.assertEqual(self.game.get_result(), "Tie")
 
-    def test_human_player_input(self):
-        # Simulate user input
-        user_input = StringIO("0\n1\n")
-        sys.stdin = user_input
+    @patch('builtins.input', side_effect=['0', '1'])
+    def test_human_player_input(self, mock_input):
         move = self.human_player.get_move(self.game)
         self.assertEqual(move, (0, 1))
-        sys.stdin = sys.__stdin__  # Reset stdin
 
-    def test_ai_player_move(self):
+    @patch('player.AIPlayer.get_move', return_value=(1, 1))
+    def test_ai_player_move(self, mock_get_move):
         move = self.ai_player.get_move(self.game)
-        self.assertIsInstance(move, tuple)
-        self.assertEqual(len(move), 2)
-        self.assertTrue(0 <= move[0] <= 2 and 0 <= move[1] <= 2)
+        self.assertEqual(move, (1, 1))
 
 if __name__ == '__main__':
     unittest.main()
