@@ -100,9 +100,9 @@ class TestAIPlayer(unittest.TestCase):
 
         result = game.get_result()
         if result == 'X wins':
-            return '1' if player1.strength_level < player2.strength_level else '2'
+            return str(player1.strength_level)
         elif result == 'O wins':
-            return '2' if player1.strength_level < player2.strength_level else '1'
+            return str(player2.strength_level)
         else:
             return 'draw'
 

@@ -46,7 +46,8 @@ class AIPlayer(Player):
             return self._get_random_move(game)
 
     def _get_hard_move(self, game):
-        return self._minimax(game, 0, True, float('-inf'), float('inf'))[1]
+        best_score, best_move = self._minimax(game, 0, True, float('-inf'), float('inf'))
+        return best_move
 
     def _get_random_move(self, game):
         board = game.get_board()
@@ -108,22 +109,21 @@ class AIPlayer(Player):
         return None
 
     def _minimax(self, game, depth, is_maximizing, alpha, beta):
-        board = game.get_board()
-        winner = self._check_winner(board)
-        
-        if winner == 'X':
-            return 10 - depth, None
-        elif winner == 'O':
-            return depth - 10, None
-        elif all(board[i][j] != " " for i in range(3) for j in range(3)):
-            return 0, None
+        if game.is_game_over():
+            result = game.get_result()
+            if result == "X wins":
+                return 10 - depth, None
+            elif result == "O wins":
+                return depth - 10, None
+            else:
+                return 0, None
 
         if is_maximizing:
             best_score = float('-inf')
             best_move = None
             for i in range(3):
                 for j in range(3):
-                    if board[i][j] == " ":
+                    if game.get_board()[i][j] == " ":
                         game.make_move((i, j))
                         score, _ = self._minimax(game, depth + 1, False, alpha, beta)
                         game.undo_move((i, j))
@@ -139,7 +139,7 @@ class AIPlayer(Player):
             best_move = None
             for i in range(3):
                 for j in range(3):
-                    if board[i][j] == " ":
+                    if game.get_board()[i][j] == " ":
                         game.make_move((i, j))
                         score, _ = self._minimax(game, depth + 1, True, alpha, beta)
                         game.undo_move((i, j))
