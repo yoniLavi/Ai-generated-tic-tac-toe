@@ -50,6 +50,8 @@ class TestGameBasics(BaseTestCase):
 
     def test_invalid_undo(self):
         game = Game()
+        game.make_move((0, 0))
+        game.undo_move((0, 0))
         with self.assertRaises(ValueError):
             game.undo_move((0, 0))
 

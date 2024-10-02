@@ -37,8 +37,8 @@ class TestAIPlayer(BaseTestCase):
 
         game1.make_move(move1)
         game2.make_move(move2)
-        game1.make_move((1, 1))  # Human player makes a different move
-        game2.make_move((0, 1))  # Human player makes a different move
+        game1.make_move((1, 1) if move1 != (1, 1) else (0, 0))  # Human player makes a different move
+        game2.make_move((0, 1) if move2 != (0, 1) else (2, 2))  # Human player makes a different move
 
         move3 = ai.get_move(game1)
         move4 = ai.get_move(game2)
