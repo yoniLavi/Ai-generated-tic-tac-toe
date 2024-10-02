@@ -30,10 +30,15 @@ This is a Python implementation of the classic Tic-Tac-Toe game, featuring a com
 
 ## How to Play
 
-1. Run the game:
+1. Run the game with optional command-line arguments:
    ```
-   python main.py
+   python main.py [-d DIFFICULTY] [-p PLAYER]
    ```
+   - `-d` or `--difficulty`: Set AI difficulty level (1: Easy, 2: Medium, 3: Hard). Default is 2 (Medium).
+   - `-p` or `--player`: Choose player symbol (X or O). Default is X.
+
+   Example: `python main.py -d 3 -p O` to play as O against Hard AI.
+
 2. The game will display an empty 3x3 board.
 3. When prompted, enter your move by specifying a number from 1 to 9, corresponding to the board positions:
    ```
@@ -54,11 +59,7 @@ The AI player has different strength levels:
 2. Medium: Combines random moves with some strategic choices
 3. Hard: Uses the minimax algorithm for optimal play
 
-To change the AI difficulty, modify the `set_strength_level()` call in the `main()` function of `main.py`:
-
-```python
-ai_player.set_strength_level(2)  # 1 for Easy, 2 for Medium, 3 for Hard
-```
+You can set the AI difficulty using the `-d` or `--difficulty` command-line argument when starting the game.
 
 ## Project Structure
 

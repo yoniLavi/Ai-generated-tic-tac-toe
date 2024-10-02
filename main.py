@@ -1,9 +1,9 @@
 """
 This is the main file that runs the tic-tac-toe game.
 """
-import argparse
 from game import Game
 from player import HumanPlayer, AIPlayer
+from cli import parse_arguments
 
 
 def print_board(board):
@@ -50,27 +50,21 @@ def main():
     """
     The main function to set up and run the Tic-Tac-Toe game.
     """
+    args = parse_arguments()
     game = Game()
     human_player = HumanPlayer()
     ai_player = AIPlayer()
 
+    ai_player.set_strength_level(args.difficulty)
+
     print("Welcome to Tic-Tac-Toe!")
-    print("You'll be playing against an AI opponent.")
-    
-    while True:
-        try:
-            difficulty = int(input("Select AI difficulty (1: Easy, 2: Medium, 3: Hard): "))
-            if 1 <= difficulty <= 3:
-                ai_player.set_strength_level(difficulty)
-                break
-            else:
-                print("Please enter a number between 1 and 3.")
-        except ValueError:
-            print("Invalid input. Please enter a number.")
+    print(f"You're playing as '{args.player}' against AI level {args.difficulty}.")
+    print("Good luck!")
 
-    print(f"\nYou're playing against AI level {difficulty}. Good luck!")
-
-    play_game(game, human_player, ai_player)
+    if args.player == 'X':
+        play_game(game, human_player, ai_player)
+    else:
+        play_game(game, ai_player, human_player)
 
 
 if __name__ == "__main__":
