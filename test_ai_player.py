@@ -65,7 +65,7 @@ class TestAIPlayer(unittest.TestCase):
         self.assertIn(move, [(0, 2), (2, 0), (2, 2)], "AI should create a fork")
 
     def play_game(self, player1, player2):
-        self.game.reset()
+        game = Game()  # Create a new game instance
         current_player = player1
         while not self.game.is_game_over():
             move = current_player.get_move(self.game)

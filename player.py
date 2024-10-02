@@ -113,6 +113,10 @@ class AIPlayer(Player):
                     if score > best_score:
                         best_score = score
                         best_move = (i, j)
+                    elif score == best_score:
+                        # Prefer corner moves and center move over edge moves
+                        if (i, j) in [(0, 0), (0, 2), (2, 0), (2, 2), (1, 1)]:
+                            best_move = (i, j)
         return best_move
 
     def _minimax(self, game, board, depth, is_maximizing, alpha, beta):
