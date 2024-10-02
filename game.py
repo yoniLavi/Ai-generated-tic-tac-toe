@@ -55,6 +55,8 @@ class Game:
             ValueError: If the move is invalid.
         """
         row, col = move
+        if not (0 <= row < 3 and 0 <= col < 3):
+            raise ValueError("Invalid move: Position out of bounds")
         if self.board[row][col] != " ":
             raise ValueError("Invalid move: This position is already occupied")
         self.board[row][col] = self.current_player

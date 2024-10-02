@@ -1,6 +1,7 @@
 """
 This is the main file that runs the tic-tac-toe game.
 """
+import argparse
 from game import Game
 from player import HumanPlayer, AIPlayer
 
@@ -12,9 +13,10 @@ def print_board(board):
     Args:
         board (list): A 2D list representing the game board.
     """
-    for row in board:
-        print(" | ".join(row))
-        print("---------")
+    for i, row in enumerate(board):
+        print(" | ".join(cell if cell != " " else str(i*3 + j + 1) for j, cell in enumerate(row)))
+        if i < 2:
+            print("---------")
 
 
 def play_game(game, player1, player2):
@@ -48,11 +50,16 @@ def main():
     """
     The main function to set up and run the Tic-Tac-Toe game.
     """
+    parser = argparse.ArgumentParser(description="Tic-Tac-Toe game")
+    parser.add_argument("--ai-strength", type=int, choices=[1, 2, 3], default=2,
+                        help="AI strength level (1: Easy, 2: Medium, 3: Hard)")
+    args = parser.parse_args()
+
     game = Game()
     human_player = HumanPlayer()
     ai_player = AIPlayer()
 
-    ai_player.set_strength_level(2)  # Set the strength level to 2 (can be adjusted)
+    ai_player.set_strength_level(args.ai_strength)
 
     play_game(game, human_player, ai_player)
 

@@ -40,12 +40,12 @@ class HumanPlayer(Player):
         board = game.get_board()
         while True:
             try:
-                row = int(input("Enter the row (0-2): "))
-                col = int(input("Enter the column (0-2): "))
-                if 0 <= row <= 2 and 0 <= col <= 2 and board[row][col] == " ":
-                    return (row, col)
-                else:
-                    print("Invalid move. Try again.")
+                move = int(input("Enter your move (1-9): "))
+                if 1 <= move <= 9:
+                    row, col = divmod(move - 1, 3)
+                    if board[row][col] == " ":
+                        return (row, col)
+                print("Invalid move. Try again.")
             except ValueError:
                 print("Invalid input. Try again.")
 
@@ -80,11 +80,26 @@ class AIPlayer(Player):
         Returns:
             tuple: A tuple containing the row and column of the move.
         """
-        # AI logic to make a move based on the strength level
-        # Implement your AI algorithm here
-        # For now, let's just make a random move
+        if self.strength_level == 1:
+            return self._get_random_move(game)
+        elif self.strength_level == 2:
+            return self._get_medium_move(game)
+        else:
+            return self._get_hard_move(game)
+
+    def _get_random_move(self, game):
         board = game.get_board()
         available_moves = [
             (i, j) for i in range(3) for j in range(3) if board[i][j] == " "
         ]
         return random.choice(available_moves)
+
+    def _get_medium_move(self, game):
+        # Implement a medium difficulty AI strategy
+        # For now, it's the same as random
+        return self._get_random_move(game)
+
+    def _get_hard_move(self, game):
+        # Implement a hard difficulty AI strategy
+        # For now, it's the same as random
+        return self._get_random_move(game)
