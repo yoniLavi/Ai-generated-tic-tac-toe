@@ -50,6 +50,10 @@ class AIPlayer(Player):
         player = game.get_current_player()
         opponent = 'O' if player == 'X' else 'X'
 
+        # If the board is empty, choose the center
+        if all(board[i][j] == " " for i in range(3) for j in range(3)):
+            return (1, 1)
+
         # Check for winning move
         for i in range(3):
             for j in range(3):
