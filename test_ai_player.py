@@ -9,11 +9,12 @@ class TestAIPlayer(unittest.TestCase):
     def test_ai_levels(self):
         wins = {1: 0, 2: 0, 3: 0}
         draws = 0
-        games_per_matchup = 500
+        games_per_matchup = 100
 
-        for _ in range(games_per_matchup):
-            for level1 in [1, 2, 3]:
-                for level2 in range(level1 + 1, 4):
+        for level1 in [1, 2, 3]:
+            for level2 in range(level1 + 1, 4):
+                print(f"\nTesting AI Level {level1} vs AI Level {level2}")
+                for game_num in range(games_per_matchup):
                     ai1 = AIPlayer()
                     ai1.set_strength_level(level1)
                     ai2 = AIPlayer()
@@ -24,14 +25,18 @@ class TestAIPlayer(unittest.TestCase):
                         draws += 1
                     else:
                         wins[int(result)] += 1
+                    
+                    print(f"Game {game_num + 1}: {'Draw' if result == 'draw' else f'AI Level {result} wins'}")
 
+        print(f"\nFinal Results:")
         print(f"AI Level Wins: {wins}")
         print(f"Draws: {draws}")
 
         # Assert that higher levels perform better
-        self.assertGreaterEqual(wins[3] + draws, wins[2] + draws)
-        self.assertGreaterEqual(wins[3] + draws, wins[1])
-        self.assertGreaterEqual(wins[2] + draws, wins[1])
+        self.assertGreater(wins[3], wins[2])
+        self.assertGreater(wins[3], wins[1])
+        self.assertGreater(wins[2], wins[1])
+        self.assertLess(draws, games_per_matchup * 3)  # Ensure not all games are draws
 
     def test_optimal_moves(self):
         ai = AIPlayer()
@@ -67,12 +72,12 @@ class TestAIPlayer(unittest.TestCase):
     def play_game(self, player1, player2):
         game = Game()  # Create a new game instance
         current_player = player1
-        while not self.game.is_game_over():
-            move = current_player.get_move(self.game)
-            self.game.make_move(move)
+        while not game.is_game_over():
+            move = current_player.get_move(game)
+            game.make_move(move)
             current_player = player2 if current_player == player1 else player1
 
-        result = self.game.get_result()
+        result = game.get_result()
         if result == 'X':
             return '1'
         elif result == 'O':
