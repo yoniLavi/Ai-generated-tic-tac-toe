@@ -2,9 +2,10 @@ import unittest
 from unittest.mock import patch
 from game import Game
 from player import HumanPlayer, AIPlayer
+from test_base import BaseTestCase
 
 
-class TestTicTacToe(unittest.TestCase):
+class TestTicTacToe(BaseTestCase):
     def setUp(self):
         self.game = Game()
         self.human_player = HumanPlayer()

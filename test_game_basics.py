@@ -1,8 +1,9 @@
 import unittest
 from game import Game
 from player import AIPlayer
+from test_base import BaseTestCase
 
-class TestGameBasics(unittest.TestCase):
+class TestGameBasics(BaseTestCase):
     def setUp(self):
         self.game = Game()
 
@@ -38,6 +39,19 @@ class TestGameBasics(unittest.TestCase):
             self.assertEqual(len(move), 2)
             self.assertTrue(0 <= move[0] < 3 and 0 <= move[1] < 3)
             self.assertEqual(game.get_board()[move[0]][move[1]], " ")
+
+    def test_undo_move(self):
+        game = Game()
+        initial_board = [row[:] for row in game.get_board()]
+        game.make_move((0, 0))
+        game.undo_move((0, 0))
+        self.assertEqual(game.get_board(), initial_board)
+        self.assertEqual(game.get_current_player(), "X")
+
+    def test_invalid_undo(self):
+        game = Game()
+        with self.assertRaises(ValueError):
+            game.undo_move((0, 0))
 
 if __name__ == '__main__':
     unittest.main()

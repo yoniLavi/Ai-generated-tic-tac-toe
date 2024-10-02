@@ -1,8 +1,9 @@
 import unittest
 from player import AIPlayer
 from game import Game
+from test_base import BaseTestCase
 
-class TestAIPlayer(unittest.TestCase):
+class TestAIPlayer(BaseTestCase):
     def setUp(self):
         self.game = Game()
 
@@ -21,6 +22,28 @@ class TestAIPlayer(unittest.TestCase):
 
         self.assertGreater(moves_made, 0, "No moves were made in the game")
         self.assertNotEqual(game.get_board(), [[" ", " ", " "], [" ", " ", " "], [" ", " ", " "]], "Board remained unchanged")
+        self.assertTrue(game.is_game_over(), "Game should be over after 9 moves")
+
+    def test_ai_different_moves(self):
+        ai = AIPlayer()
+        ai.set_strength_level(3)
+        game1 = Game()
+        game2 = Game()
+
+        move1 = ai.get_move(game1)
+        move2 = ai.get_move(game2)
+
+        self.assertEqual(move1, move2, "AI should make the same first move in identical game states")
+
+        game1.make_move(move1)
+        game2.make_move(move2)
+        game1.make_move((1, 1))  # Human player makes a different move
+        game2.make_move((0, 1))  # Human player makes a different move
+
+        move3 = ai.get_move(game1)
+        move4 = ai.get_move(game2)
+
+        self.assertNotEqual(move3, move4, "AI should make different moves in different game states")
 
     def test_ai_levels(self):
         wins = {1: 0, 2: 0, 3: 0}
