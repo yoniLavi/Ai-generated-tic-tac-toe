@@ -168,7 +168,7 @@ class AIPlayer(Player):
     def _get_score(self, result, depth):
         if result == "tie":
             return 0
-        elif result == self.get_current_player():
+        elif result == game.get_current_player():
             return 10 - depth
         else:
             return depth - 10
