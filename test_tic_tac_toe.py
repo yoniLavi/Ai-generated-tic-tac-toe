@@ -1,8 +1,8 @@
 import unittest
 from unittest.mock import patch
-from io import StringIO
 from game import Game
 from player import HumanPlayer, AIPlayer
+
 
 class TestTicTacToe(unittest.TestCase):
     def setUp(self):
@@ -12,13 +12,13 @@ class TestTicTacToe(unittest.TestCase):
 
     def test_initial_game_state(self):
         self.assertFalse(self.game.is_game_over())
-        self.assertEqual(self.game.get_current_player(), 'X')
+        self.assertEqual(self.game.get_current_player(), "X")
         self.assertEqual(self.game.get_result(), None)
 
     def test_make_move(self):
         self.game.make_move((0, 0))
-        self.assertEqual(self.game.board[0][0], 'X')
-        self.assertEqual(self.game.get_current_player(), 'O')
+        self.assertEqual(self.game.board[0][0], "X")
+        self.assertEqual(self.game.get_current_player(), "O")
 
     def test_invalid_move(self):
         self.game.make_move((0, 0))
@@ -59,15 +59,16 @@ class TestTicTacToe(unittest.TestCase):
         self.assertTrue(self.game.is_game_over())
         self.assertEqual(self.game.get_result(), "Tie")
 
-    @patch('builtins.input', side_effect=['0', '1'])
+    @patch("builtins.input", side_effect=["0", "1"])
     def test_human_player_input(self, mock_input):
         move = self.human_player.get_move(self.game)
         self.assertEqual(move, (0, 1))
 
-    @patch('player.AIPlayer.get_move', return_value=(1, 1))
+    @patch("player.AIPlayer.get_move", return_value=(1, 1))
     def test_ai_player_move(self, mock_get_move):
         move = self.ai_player.get_move(self.game)
         self.assertEqual(move, (1, 1))
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()
