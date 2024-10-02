@@ -3,6 +3,7 @@ from player import AIPlayer
 from game import Game
 from test_base import BaseTestCase
 
+
 class TestAIPlayer(BaseTestCase):
     def setUp(self):
         self.game = Game()
@@ -16,12 +17,20 @@ class TestAIPlayer(BaseTestCase):
         game = Game()
         moves_made = 0
         while not game.is_game_over() and moves_made < 9:
-            move = ai1.get_move(game) if game.get_current_player() == 'X' else ai2.get_move(game)
+            move = (
+                ai1.get_move(game)
+                if game.get_current_player() == "X"
+                else ai2.get_move(game)
+            )
             game.make_move(move)
             moves_made += 1
 
         self.assertGreater(moves_made, 0, "No moves were made in the game")
-        self.assertNotEqual(game.get_board(), [[" ", " ", " "], [" ", " ", " "], [" ", " ", " "]], "Board remained unchanged")
+        self.assertNotEqual(
+            game.get_board(),
+            [[" ", " ", " "], [" ", " ", " "], [" ", " ", " "]],
+            "Board remained unchanged",
+        )
         self.assertTrue(game.is_game_over(), "Game should be over after 9 moves")
 
     def test_ai_different_moves(self):
@@ -33,17 +42,25 @@ class TestAIPlayer(BaseTestCase):
         move1 = ai.get_move(game1)
         move2 = ai.get_move(game2)
 
-        self.assertEqual(move1, move2, "AI should make the same first move in identical game states")
+        self.assertEqual(
+            move1, move2, "AI should make the same first move in identical game states"
+        )
 
         game1.make_move(move1)
         game2.make_move(move2)
-        game1.make_move((1, 1) if move1 != (1, 1) else (0, 0))  # Human player makes a different move
-        game2.make_move((0, 1) if move2 != (0, 1) else (2, 2))  # Human player makes a different move
+        game1.make_move(
+            (1, 1) if move1 != (1, 1) else (0, 0)
+        )  # Human player makes a different move
+        game2.make_move(
+            (0, 1) if move2 != (0, 1) else (2, 2)
+        )  # Human player makes a different move
 
         move3 = ai.get_move(game1)
         move4 = ai.get_move(game2)
 
-        self.assertNotEqual(move3, move4, "AI should make different moves in different game states")
+        self.assertNotEqual(
+            move3, move4, "AI should make different moves in different game states"
+        )
 
     def test_ai_levels(self):
         wins = {1: 0, 2: 0, 3: 0}
@@ -58,22 +75,28 @@ class TestAIPlayer(BaseTestCase):
                     ai1.set_strength_level(level1)
                     ai2 = AIPlayer()
                     ai2.set_strength_level(level2)
-                    
+
                     result = self.play_game(ai1, ai2)
-                    if result == 'draw':
+                    if result == "draw":
                         draws += 1
                     else:
                         wins[int(result)] += 1
-                    
+
                     if game_num % 10 == 0:
-                        print(f"Game {game_num + 1}: {'Draw' if result == 'draw' else f'AI Level {result} wins'}")
+                        print(
+                            f"Game {game_num + 1}: {'Draw' if result == 'draw' else f'AI Level {result} wins'}"
+                        )
 
         print(f"\nFinal Results:")
         print(f"AI Level Wins: {wins}")
         print(f"Draws: {draws}")
 
         total_games = sum(wins.values()) + draws
-        self.assertEqual(total_games, games_per_matchup * 3, f"Expected {games_per_matchup * 3} games, but played {total_games}")
+        self.assertEqual(
+            total_games,
+            games_per_matchup * 3,
+            f"Expected {games_per_matchup * 3} games, but played {total_games}",
+        )
         self.assertGreater(sum(wins.values()), 0, "No games were won by any AI")
 
     def test_optimal_moves(self):
@@ -82,56 +105,36 @@ class TestAIPlayer(BaseTestCase):
 
         # Test blocking opponent's win (horizontal)
         game = Game()
-        game.board = [
-            ['X', 'X', ' '],
-            [' ', 'O', ' '],
-            [' ', ' ', ' ']
-        ]
-        game.current_player = 'O'
+        game.board = [["X", "X", " "], [" ", "O", " "], [" ", " ", " "]]
+        game.current_player = "O"
         move = ai.get_move(game)
         self.assertEqual(move, (0, 2), "AI should block opponent's horizontal win")
 
         # Test blocking opponent's win (vertical)
         game = Game()
-        game.board = [
-            ['X', ' ', ' '],
-            ['X', 'O', ' '],
-            [' ', ' ', ' ']
-        ]
-        game.current_player = 'O'
+        game.board = [["X", " ", " "], ["X", "O", " "], [" ", " ", " "]]
+        game.current_player = "O"
         move = ai.get_move(game)
         self.assertEqual(move, (2, 0), "AI should block opponent's vertical win")
 
         # Test blocking opponent's win (diagonal)
         game = Game()
-        game.board = [
-            ['X', ' ', ' '],
-            [' ', 'X', ' '],
-            [' ', 'O', ' ']
-        ]
-        game.current_player = 'O'
+        game.board = [["X", " ", " "], [" ", "X", " "], [" ", "O", " "]]
+        game.current_player = "O"
         move = ai.get_move(game)
         self.assertEqual(move, (2, 2), "AI should block opponent's diagonal win")
 
         # Test taking winning move
         game = Game()
-        game.board = [
-            ['O', 'O', ' '],
-            [' ', 'X', ' '],
-            ['X', ' ', ' ']
-        ]
-        game.current_player = 'O'
+        game.board = [["O", "O", " "], [" ", "X", " "], ["X", " ", " "]]
+        game.current_player = "O"
         move = ai.get_move(game)
         self.assertEqual(move, (0, 2), "AI should take the winning move")
 
         # Test preferring center
         game = Game()
-        game.board = [
-            [' ', ' ', ' '],
-            [' ', ' ', ' '],
-            [' ', ' ', ' ']
-        ]
-        game.current_player = 'X'
+        game.board = [[" ", " ", " "], [" ", " ", " "], [" ", " ", " "]]
+        game.current_player = "X"
         move = ai.get_move(game)
         self.assertEqual(move, (1, 1), "AI should prefer the center")
 
@@ -144,12 +147,13 @@ class TestAIPlayer(BaseTestCase):
             current_player = player2 if current_player == player1 else player1
 
         result = game.get_result()
-        if result == 'X wins':
+        if result == "X wins":
             return str(player1.strength_level)
-        elif result == 'O wins':
+        elif result == "O wins":
             return str(player2.strength_level)
         else:
-            return 'draw'
+            return "draw"
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

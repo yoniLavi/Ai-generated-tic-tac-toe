@@ -3,9 +3,11 @@ This file contains the Player classes.
 """
 import random
 
+
 class Player:
     def get_move(self, game):
         raise NotImplementedError("Subclasses must implement get_move method")
+
 
 class HumanPlayer(Player):
     def get_move(self, game):
@@ -20,6 +22,7 @@ class HumanPlayer(Player):
                 print("Invalid move. Try again.")
             except ValueError:
                 print("Invalid input. Try again.")
+
 
 class AIPlayer(Player):
     def __init__(self):
@@ -66,7 +69,7 @@ class AIPlayer(Player):
         """
         board = game.get_board()
         player = game.get_current_player()
-        opponent = 'O' if player == 'X' else 'X'
+        opponent = "O" if player == "X" else "X"
 
         # If the board is empty, choose the center
         if all(board[i][j] == " " for i in range(3) for j in range(3)):
@@ -93,18 +96,22 @@ class AIPlayer(Player):
                     board[i][j] = " "
 
         # If no immediate winning or blocking move, use minimax
-        best_score, best_move = self._minimax(game, 0, True, float('-inf'), float('inf'))
+        best_score, best_move = self._minimax(
+            game, 0, True, float("-inf"), float("inf")
+        )
         return best_move
 
     def _get_random_move(self, game):
         board = game.get_board()
-        available_moves = [(i, j) for i in range(3) for j in range(3) if board[i][j] == " "]
+        available_moves = [
+            (i, j) for i in range(3) for j in range(3) if board[i][j] == " "
+        ]
         return random.choice(available_moves)
 
     def _get_smart_move(self, game):
         board = game.get_board()
         player = game.get_current_player()
-        opponent = 'O' if player == 'X' else 'X'
+        opponent = "O" if player == "X" else "X"
 
         # Check for winning move
         for i in range(3):
@@ -132,7 +139,9 @@ class AIPlayer(Player):
 
         # Choose a corner
         corners = [(0, 0), (0, 2), (2, 0), (2, 2)]
-        available_corners = [corner for corner in corners if board[corner[0]][corner[1]] == " "]
+        available_corners = [
+            corner for corner in corners if board[corner[0]][corner[1]] == " "
+        ]
         if available_corners:
             return random.choice(available_corners)
 
@@ -166,7 +175,7 @@ class AIPlayer(Player):
                 return 0, None
 
         if is_maximizing:
-            best_score = float('-inf')
+            best_score = float("-inf")
             best_move = None
             for i in range(3):
                 for j in range(3):
@@ -182,7 +191,7 @@ class AIPlayer(Player):
                             break
             return best_score, best_move
         else:
-            best_score = float('inf')
+            best_score = float("inf")
             best_move = None
             for i in range(3):
                 for j in range(3):

@@ -1,12 +1,15 @@
 import unittest
 from game import Game
 
+
 class BaseTestCase(unittest.TestCase):
     def setUp(self):
         self.game = Game()
 
     def assertBoardEqual(self, board1, board2):
-        self.assertEqual(board1, board2, f"Boards are not equal:\n{board1}\n!=\n{board2}")
+        self.assertEqual(
+            board1, board2, f"Boards are not equal:\n{board1}\n!=\n{board2}"
+        )
 
     def make_moves(self, moves):
         for move in moves:

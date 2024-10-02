@@ -3,12 +3,15 @@ from game import Game
 from player import AIPlayer
 from test_base import BaseTestCase
 
+
 class TestGameBasics(BaseTestCase):
     def setUp(self):
         self.game = Game()
 
     def test_initial_board(self):
-        self.assertEqual(self.game.get_board(), [[" ", " ", " "], [" ", " ", " "], [" ", " ", " "]])
+        self.assertEqual(
+            self.game.get_board(), [[" ", " ", " "], [" ", " ", " "], [" ", " ", " "]]
+        )
 
     def test_make_move(self):
         self.game.make_move((0, 0))
@@ -55,5 +58,6 @@ class TestGameBasics(BaseTestCase):
         with self.assertRaises(ValueError):
             game.undo_move((0, 0))
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

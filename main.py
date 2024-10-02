@@ -14,7 +14,12 @@ def print_board(board):
         board (list): A 2D list representing the game board.
     """
     for i, row in enumerate(board):
-        print(" | ".join(cell if cell != " " else str(i*3 + j + 1) for j, cell in enumerate(row)))
+        print(
+            " | ".join(
+                cell if cell != " " else str(i * 3 + j + 1)
+                for j, cell in enumerate(row)
+            )
+        )
         if i < 2:
             print("---------")
 
@@ -28,10 +33,7 @@ def play_game(game, player1, player2):
         player1 (Player): The first player (X).
         player2 (Player): The second player (O).
     """
-    players = {
-        "X": player1,
-        "O": player2
-    }
+    players = {"X": player1, "O": player2}
 
     while not game.is_game_over():
         print_board(game.get_board())
@@ -61,7 +63,7 @@ def main():
     print(f"You're playing as '{args.player}' against AI level {args.difficulty}.")
     print("Good luck!")
 
-    if args.player == 'X':
+    if args.player == "X":
         play_game(game, human_player, ai_player)
     else:
         play_game(game, ai_player, human_player)
