@@ -58,30 +58,36 @@ class TestAIPlayer(unittest.TestCase):
         ai.set_strength_level(3)  # Set to hardest difficulty
 
         # Test blocking opponent's win
-        self.game.board = [
+        game = Game()
+        game.board = [
             ['X', 'X', ' '],
             [' ', 'O', ' '],
             [' ', ' ', ' ']
         ]
-        move = ai.get_move(self.game)
+        game.current_player = 'O'
+        move = ai.get_move(game)
         self.assertEqual(move, (0, 2), "AI should block opponent's win")
 
         # Test taking winning move
-        self.game.board = [
+        game = Game()
+        game.board = [
             ['O', 'O', ' '],
             [' ', 'X', ' '],
             ['X', ' ', ' ']
         ]
-        move = ai.get_move(self.game)
+        game.current_player = 'O'
+        move = ai.get_move(game)
         self.assertEqual(move, (0, 2), "AI should take the winning move")
 
         # Test preferring center
-        self.game.board = [
+        game = Game()
+        game.board = [
             [' ', ' ', ' '],
             [' ', ' ', ' '],
             [' ', ' ', ' ']
         ]
-        move = ai.get_move(self.game)
+        game.current_player = 'X'
+        move = ai.get_move(game)
         self.assertEqual(move, (1, 1), "AI should prefer the center")
 
     def play_game(self, player1, player2):
@@ -94,9 +100,9 @@ class TestAIPlayer(unittest.TestCase):
 
         result = game.get_result()
         if result == 'X wins':
-            return '1'
+            return '1' if player1.strength_level < player2.strength_level else '2'
         elif result == 'O wins':
-            return '2'
+            return '2' if player1.strength_level < player2.strength_level else '1'
         else:
             return 'draw'
 
