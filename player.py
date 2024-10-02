@@ -40,13 +40,13 @@ class AIPlayer(Player):
         return self._get_random_move(game)
 
     def _get_medium_move(self, game):
-        if random.random() < 0.5:
+        if random.random() < 0.7:  # Increased probability of smart move
             return self._get_smart_move(game)
         else:
             return self._get_random_move(game)
 
     def _get_hard_move(self, game):
-        return self._get_smart_move(game)
+        return self._minimax(game, 0, True, float('-inf'), float('inf'))[1]
 
     def _get_random_move(self, game):
         board = game.get_board()
@@ -106,3 +106,47 @@ class AIPlayer(Player):
         if board[0][2] == board[1][1] == board[2][0] != " ":
             return board[0][2]
         return None
+
+    def _minimax(self, game, depth, is_maximizing, alpha, beta):
+        board = game.get_board()
+        winner = self._check_winner(board)
+        
+        if winner == 'X':
+            return 10 - depth, None
+        elif winner == 'O':
+            return depth - 10, None
+        elif all(board[i][j] != " " for i in range(3) for j in range(3)):
+            return 0, None
+
+        if is_maximizing:
+            best_score = float('-inf')
+            best_move = None
+            for i in range(3):
+                for j in range(3):
+                    if board[i][j] == " ":
+                        game.make_move((i, j))
+                        score, _ = self._minimax(game, depth + 1, False, alpha, beta)
+                        game.undo_move((i, j))
+                        if score > best_score:
+                            best_score = score
+                            best_move = (i, j)
+                        alpha = max(alpha, best_score)
+                        if beta <= alpha:
+                            break
+            return best_score, best_move
+        else:
+            best_score = float('inf')
+            best_move = None
+            for i in range(3):
+                for j in range(3):
+                    if board[i][j] == " ":
+                        game.make_move((i, j))
+                        score, _ = self._minimax(game, depth + 1, True, alpha, beta)
+                        game.undo_move((i, j))
+                        if score < best_score:
+                            best_score = score
+                            best_move = (i, j)
+                        beta = min(beta, best_score)
+                        if beta <= alpha:
+                            break
+            return best_score, best_move
