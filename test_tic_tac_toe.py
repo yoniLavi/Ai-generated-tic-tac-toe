@@ -17,7 +17,7 @@ class TestTicTacToe(unittest.TestCase):
 
     def test_make_move(self):
         self.game.make_move((0, 0))
-        self.assertEqual(self.game.board[0][0], "X")
+        self.assertEqual(self.game.get_board()[0][0], "X")
         self.assertEqual(self.game.get_current_player(), "O")
 
     def test_invalid_move(self):
@@ -59,15 +59,16 @@ class TestTicTacToe(unittest.TestCase):
         self.assertTrue(self.game.is_game_over())
         self.assertEqual(self.game.get_result(), "Tie")
 
-    @patch("builtins.input", side_effect=["0", "1"])
+    @patch("builtins.input", side_effect=["1", "2"])
     def test_human_player_input(self, mock_input):
         move = self.human_player.get_move(self.game)
         self.assertEqual(move, (0, 1))
 
-    @patch("player.AIPlayer.get_move", return_value=(1, 1))
-    def test_ai_player_move(self, mock_get_move):
+    def test_ai_player_move(self):
         move = self.ai_player.get_move(self.game)
-        self.assertEqual(move, (1, 1))
+        self.assertIsInstance(move, tuple)
+        self.assertEqual(len(move), 2)
+        self.assertTrue(0 <= move[0] <= 2 and 0 <= move[1] <= 2)
 
 
 if __name__ == "__main__":
