@@ -118,7 +118,7 @@ class AIPlayer(Player):
     def _minimax(self, game, board, depth, is_maximizing, alpha, beta):
         result = self._check_winner(board)
         if result is not None:
-            return self._get_score(result, depth)
+            return self._get_score(game, result, depth)
 
         if is_maximizing:
             best_score = -math.inf
@@ -165,7 +165,7 @@ class AIPlayer(Player):
         
         return None
 
-    def _get_score(self, result, depth):
+    def _get_score(self, game, result, depth):
         if result == "tie":
             return 0
         elif result == game.get_current_player():
