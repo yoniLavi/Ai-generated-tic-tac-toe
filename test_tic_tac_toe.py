@@ -59,10 +59,10 @@ class TestTicTacToe(unittest.TestCase):
         self.assertTrue(self.game.is_game_over())
         self.assertEqual(self.game.get_result(), "Tie")
 
-    @patch("builtins.input", side_effect=["1", "2"])
+    @patch("builtins.input", side_effect=["1"])
     def test_human_player_input(self, mock_input):
         move = self.human_player.get_move(self.game)
-        self.assertEqual(move, (0, 1))
+        self.assertEqual(move, (0, 0))
 
     def test_ai_player_move(self):
         move = self.ai_player.get_move(self.game)
