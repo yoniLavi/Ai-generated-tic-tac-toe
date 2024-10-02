@@ -96,8 +96,28 @@ class AIPlayer(Player):
         return random.choice(available_moves)
 
     def _get_medium_move(self, game):
-        # Implement a medium difficulty AI strategy
-        # For now, it's the same as random
+        # Check for winning move
+        for i in range(3):
+            for j in range(3):
+                if game.get_board()[i][j] == " ":
+                    game.make_move((i, j))
+                    if game.is_game_over():
+                        game.undo_move((i, j))
+                        return (i, j)
+                    game.undo_move((i, j))
+        
+        # Check for blocking opponent's winning move
+        opponent = 'O' if game.get_current_player() == 'X' else 'X'
+        for i in range(3):
+            for j in range(3):
+                if game.get_board()[i][j] == " ":
+                    game.get_board()[i][j] = opponent
+                    if game._check_game_over():
+                        game.get_board()[i][j] = " "
+                        return (i, j)
+                    game.get_board()[i][j] = " "
+        
+        # If no winning or blocking move, choose a random move
         return self._get_random_move(game)
 
     def _get_hard_move(self, game):
